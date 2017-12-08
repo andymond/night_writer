@@ -1,35 +1,42 @@
-require '../lib/runner'
+require './lib/runner'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'pry'
 
-class TestRunner < Minitest::Test
+class RunnerTest < Minitest::Test
 
   def test_read_file_returns_content
     runner = Runner.new
-    runner.input_array << "content"
+    `echo "Content" > ./lib/message.txt`
+    runner.input_array << "./lib/message.txt"
 
-    assert_equal "content", runner.read_file
-  end
-
-  def test_write_file
-    skip
-    runner = Runner.new
-
-    assert runner.write_file
+    assert_equal "Content\n", runner.read_file
   end
 
   def test_process_content
-    skip
     runner = Runner.new
+    `echo "Content" > ./lib/message.txt`
+    runner.input_array << "./lib/message.txt"
 
-    assert runner.process_content
+    assert_equal "CONTENT\n", runner.process_content
   end
 
-  def test_message
+  def test_write_file_returns_character_count
     skip
     runner = Runner.new
+    `echo "Content" > ./lib/message.txt`
+    runner.input_array += ["./lib/message.txt", "./lib/message_copy.txt"]
 
-    assert runner.message
+    assert_equal "Content\n".length, runner.write_file
+  end
+
+
+  def test_message
+    runner = Runner.new
+    `echo "Content" > ./lib/message.txt`
+    runner.input_array += ["./lib/message.txt", "./lib/message_copy.txt"]
+
+    assert_equal "Created 'message_copy.txt' containing 8 characters", runner.message
   end
 
 end

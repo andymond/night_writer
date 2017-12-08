@@ -22,6 +22,7 @@ class Runner
   def write_file
     writer = File.open(@input_array[1], 'w')
     @characters = writer.write(process_content)
+    writer.rewind
     writer.close
     @characters
   end
@@ -32,6 +33,6 @@ class Runner
   end
 
 end
-
-runner = Runner.new
-runner.message
+#
+# r = Runner.new
+# r.message
