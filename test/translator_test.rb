@@ -10,30 +10,35 @@ class TranslatorTest < MiniTest::Test
     assert_instance_of Translator, translator
   end
 
-  def test_input_1_output_3_on_newlines
-    translator = Translator.new
-
-    assert_equal "hey\nhey\nhey", translator.threelines("hey")
-  end
-
   def test_braille_array_of_strings
     translator = Translator.new
 
-    assert_equal ["0....."], translator.english_to_braille_array_of_strings("a")
-    assert_equal ["0.00..", "0..0..", "0.0.0.", "0.0.0.", "0..00."], translator.english_to_braille_array_of_strings("Hello")
+    assert_equal ["0....."], translator.english_to_braille_array("a")
+    assert_equal ["0.00..", "0..0..", "0.0.0.", "0.0.0.", "0..00."], translator.english_to_braille_array("Hello")
   end
 
-  def test_split_one_line_braille_every_other
+  def test_braile_string_joins_array
     translator = Translator.new
 
-    assert_equal ["0.", "..", ".."], translator.split_every_other("0.....")
+    assert_equal "0.....", translator.braille_string("a")
+    assert_equal "0..... 00.00. 00.0.. 00.000", translator.braille_string("a n d y")
   end
 
-  def test_three_line_braille_conversion
+  def test_input_letter_output_braille_on_newlines
+    translator = Translator.new
+
+    assert_equal "0.\n00\n..", translator.threelines("h")
+    assert_equal "0.\n.0\n00", translator.threelines("z")
+    assert_equal " \n\n", translator.threelines(" ")
+  end
+
+  def test_input_word_output_braille_array
     skip
     translator = Translator.new
 
-    assert_equal "0.\n00\n..", translator.three_line_braille("0.00..")
+    assert_equal ["0.\n00\n..", ".0\n0.\n.."], word_to_braille_array("hi")
+
   end
+
 
 end

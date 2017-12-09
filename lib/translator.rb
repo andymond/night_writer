@@ -43,11 +43,7 @@ class Translator
     words.to_s.split("")
   end
 
-  def threelines(element)
-    "#{element}\n#{element}\n#{element}"
-  end
-
-  def english_to_braille_array_of_strings(words)
+  def english_to_braille_array(words)
     english = split_words(words)
     braille = english.map do |character|
       DICTIONARY[character.downcase]
@@ -56,12 +52,11 @@ class Translator
   end
 
   def braille_string(words)
-    one_line_braille(words).join('')
+    english_to_braille_array(words).join('')
   end
 
-  def split_every_other(words)
-    braille_string(words).scan(/../)
+  def threelines(words)
+    "#{braille_string(words)[0..1]}\n#{braille_string(words)[2..3]}\n#{braille_string(words)[4..5]}"
   end
-
 
 end
