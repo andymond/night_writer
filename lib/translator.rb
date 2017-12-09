@@ -7,7 +7,6 @@ class Translator
   def initialize(words = "hey")
     @words = words
   end
-#add caps as distinct characters?
   DICTIONARY = {
     "a"=>"0.....",
     "b"=>"0.0...",
@@ -56,12 +55,25 @@ class Translator
     "9"=>".00..."
   }
 
-  def character_verification(words)
-  
-  end
-
   def split_words(words)
     words.to_s.split("")
+  end
+
+  def character_verification(words)
+
+  end
+
+  def capital_letters(words)
+    shifted_letters = split_words(words).map do |char|
+      if char =~ /(?: |1|2|3|4|5|6|7|8|9|!|'|,|-|#|\.|\?)/ # "." and "?" break it
+        char
+      elsif char == char.upcase
+       ["shift", char.downcase]
+      else
+       char
+      end
+    end
+    shifted_letters.flatten
   end
 
   def chars_to_braille_array(words)
@@ -82,7 +94,6 @@ class Translator
     line_3 = chars_to_braille_array(words).map do |letter|
       letter[4..5]
     end
-
     "#{line_1.join('')}\n#{line_2.join('')}\n#{line_3.join('')}"
   end
 
