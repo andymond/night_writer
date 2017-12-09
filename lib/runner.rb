@@ -21,17 +21,15 @@ class Runner
 
   def write_new_file
     writer = File.open(@write_file, 'w')
-    characters = writer.write(process_content)
+    char_count = writer.write(process_content)
     writer.rewind
     writer.close
-    characters
+    char_count
   end
 
   def message
-    p "Created '#{ARGV[1]}' containing #{write_file} characters"
+    char_count = write_new_file
+    p "Created '#{write_file}' containing #{char_count} characters"
   end
 
 end
-
-r = Runner.new
-r.message
