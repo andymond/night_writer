@@ -10,68 +10,72 @@ class TranslatorTest < MiniTest::Test
     assert_instance_of Translator, translator
   end
 
-  def test_input_letter_output_braille_on_newlines
+  def test_split_words_works
     translator = Translator.new
 
-    assert_equal "0.\n00\n..", translator.threelines("h")
-    assert_equal "0.\n.0\n00", translator.threelines("z")
-    assert_equal "..\n..\n..", translator.threelines(" ")
-    assert_equal "0..0\n000.\n....", translator.threelines("hi")
-    assert_equal "0.0.0.0.0.\n00.00.0..0\n....0.0.0.", translator.threelines("hello")
-    assert_equal "0..0..0.0.0.0.0.\n000...00.00.0..0\n..........0.0.0.", translator.threelines("hi hello")
+    assert_equal ["h", "e", "l", "l", "o"], translator.split_words("hello")
+    assert_equal ["1", "$", "A", "^"], translator.split_words("1$A^")
   end
 
-  def test_braille_array_of_strings
+  def test_verify_characters_removes_chars_not_in_dictionary
     translator = Translator.new
 
-    assert_equal ["0....."], translator.chars_to_braille_array("a")
-    assert_equal ["......"], translator.chars_to_braille_array(" ")
-    assert_equal ["0.....", "0.0...", "00....", "..0.00", "0.....", "0.0...", "00...."], translator.chars_to_braille_array("123?abc")
-    assert_equal ["0.00..", "0..0..", "0.0.0.", "0.0.0.", "0..00."], translator.chars_to_braille_array("hello")
+    assert_equal ["h", "e", "l", "l", "o"], translator.verify(["h", "e", "l", "l", "o"])
+    assert_equal ["h", "#", "l", "l"], translator.verify(["h", "#", "@", "l", "l", "*", ")", "~"])
   end
 
-  def test_shift_correlated_with_only_capital_letters
+  def test_has_caps_returns_true_for_caps_false_for_non
     translator = Translator.new
 
-    assert_equal ["shift", "a", "shift", "b", "shift", "c"], translator.capital_letters("ABC")
-    assert_equal ["shift", "a", "n", "d", "y"], translator.capital_letters("Andy")
-    assert_equal ["a", "n", "d", "y"], translator.capital_letters("andy")
-    assert_equal translator.split_words("lowcase"), translator.capital_letters("lowcase")
-    assert_equal [" "], translator.capital_letters(" ")
-    #assert_equal ["$"], translator.capital_letters("$")
+    assert_equal true, translator.has_caps?(["A"])
+    assert_equal false, translator.has_caps?(["b"])
   end
 
-  def test_character_verification_works
+  def test_shift_works
     translator = Translator.new
 
-    assert_equal ["a", "b", "4"], translator.character_verification("ab4$%^&*")
-    assert_equal ["A", ".", "!", " ", " "], translator.character_verification("A.!  ")
+    assert_equal ["shift", "h", "shift", "e", "shift", "l", "shift", "l", "o"], translator.shift(["H", "E", "L", "L", "o"])
+    assert_equal ["h", "i", "!", "shift", "@", "shift", "b"], translator.shift(["h","i", "!", "@", "B"])
   end
 
-  def test_braille_line_length
+  def test_to_braille_array_works
     translator = Translator.new
 
-    assert_equal 10, translator.line_length("hello")
-    assert_equal 28, translator.line_length("oh! Hey ther3")
-    assert_equal 92, translator.line_length("WOAHHHHHHH   THAT! IS, GR3@t!")
+    assert_equal ["0.00..", "0..0..", "0.0.0.", "0.0.0.", "0..00."], translator.to_braille_array(["h", "e", "l", "l", "o"])
   end
 
-  def test_slice_caps_array_into_nested_arrays_of_80
+  def test_to_braille_string_works
     translator = Translator.new
 
-    assert_equal [["t", "r", "i", "f", "o", "r", "c", "e"]], translator.line_divide("triforce")
+    assert_equal "oh\nhi\noh", translator.to_braille_string(["ohhioh"])
+    assert_equal "0.0.\n....\n....", translator.to_braille_string(["0.....", "0....."])
   end
 
-  def test_translate_array_character_arrays_to_array_of_braille_arrays
+  def test_line_divide_converts_array_of_strings_into_array_specific_length_arrays
     translator = Translator.new
 
-    assert_equal [["0.00..", "0..0..", "0.0.0.", "0.0.0.", "0..00."]], translator.nested_chars_to_nested_braille("hello")
+    assert_equal [["hi", "my"],["name", "is"], ["Andy"]], translator.line_divide(["hi", "my", "name", "is", "Andy"], 2)
   end
 
-  def test_braille_return
+  def test_encode_takes_key_character_array_and_returns_braille_strings
     translator = Translator.new
 
-    assert_equal "0.0.0.0.0.\n00.00.0..0\n....0.0.0.\n\n", translator.braille_threelines("hello")
+    assert_equal "0.0.\n....\n....", translator.encode(["a", "a"])
+  end
+
+  def test_translate_takes_key_character_array_returns_braille_strings_with_line_breaks
+    translator = Translator.new
+
+    assert_equal "0.0.\n....\n....", translator.translate(["a", "a"])
+    assert_equal "0.\n..\n..\n\n0.\n..\n..", translator.translate(["a", "a"], 1)
+  end
+
+  def test_to_braille_takes_string_returns_braille_with_proper_returns
+    translator = Translator.new
+
+    assert_equal "0.\n..\n..", translator.to_braille("a")
+    assert_equal "0.0.\n....\n....", translator.to_braille("a@a")
+    assert_equal "\n\n", translator.to_braille("@@@@@@@@@@")
   end
 
 end

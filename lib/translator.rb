@@ -1,66 +1,43 @@
-#require_relative 'dictionary'
+require_relative 'dictionary'
 
 class Translator
+  LINE_MAX = 80
 
   attr_accessor :words
 
   def initialize(words = "hey")
     @words = words
   end
-  DICTIONARY = {
-    "a"=>"0.....",
-    "b"=>"0.0...",
-    "c"=>"00....",
-    "d"=>"00.0..",
-    "e"=>"0..0..",
-    "f"=>"000...",
-    "g"=>"0000..",
-    "h"=>"0.00..",
-    "i"=>".00...",
-    "j"=>".000..",
-    "k"=>"0...0.",
-    "l"=>"0.0.0.",
-    "m"=>"00..0.",
-    "n"=>"00.00.",
-    "o"=>"0..00.",
-    "p"=>"000.0.",
-    "q"=>"00000.",
-    "r"=>"0.000.",
-    "s"=>".00.0.",
-    "t"=>".0000.",
-    "u"=>"0...00",
-    "v"=>"0.0.00",
-    "w"=>".000.0",
-    "x"=>"00..00",
-    "y"=>"00.000",
-    "z"=>"0..000",
-    "shift"=>".....0",
-    " "=>"......",
-    "!"=>"..000.",
-    "'"=>"....0.",
-    ","=>"..0...",
-    "-"=>"....00",
-    "."=>"..00.0",
-    "?"=>"..0.00",
-    "#"=>".0.000",
-    "0"=>".000..",
-    "1"=>"0.....",
-    "2"=>"0.0...",
-    "3"=>"00....",
-    "4"=>"00.0..",
-    "5"=>"0..0..",
-    "6"=>"000...",
-    "7"=>"0000..",
-    "8"=>"0.00..",
-    "9"=>".00..."
-  }
+
+  def to_braille(words)
+    characters = split_words(words)
+    verified = verify(characters)
+    caps_verified = has_caps?(verified) ? shift(verified) : verified
+    translate(caps_verified)
+  end
+
+  def translate(characters, max = LINE_MAX)
+    if characters.length < max
+      encode(characters)
+    else
+      lines = line_divide(characters, max).map do |line|
+        encode(line)
+      end
+      lines.join("\n\n")
+    end
+  end
+
+  def encode(line)
+    single_line_braille = to_braille_array(line)
+    to_braille_string(single_line_braille)
+  end
 
   def split_words(words)
     words.to_s.split("")
   end
 
-  def character_verification(words)
-    verified = split_words(words).map do |char|
+  def verify(characters)
+    verified = characters.map do |char|
       if char =~ /[\w |!|'|,|-|#|\.|\?]/
         char
       end
@@ -68,8 +45,14 @@ class Translator
     verified.compact
   end
 
-  def capital_letters(words)
-    shifted_letters = character_verification(words).map do |char|
+  def has_caps?(characters)
+    characters.any? do |character|
+      character == character.upcase
+    end
+  end
+
+  def shift(letters)
+    shifted_letters = letters.map do |char|
       if char =~ /(?: |1|2|3|4|5|6|7|8|9|!|'|,|-|#|\.|\?)/
         char
       elsif char == char.upcase
@@ -81,43 +64,27 @@ class Translator
     shifted_letters.flatten
   end
 
-  def line_divide(words)
-    @nested_char_array = capital_letters(words).each_slice(80).to_a
-  end
-
-  def chars_to_braille_array(words) #this will need to iterate on two levels for line length
-    chars = capital_letters(words)
-    braille = chars.map do |character|
-      DICTIONARY[character.downcase]
-    end
-    braille
-  end
-
-  def nested_chars_to_nested_braille
-    @nested_char_array.map do |element|
-      element.chars_to_braille_array
+  def to_braille_array(characters)
+    characters.map do |character|
+      Dictionary::CHARACTERS[character.downcase]
     end
   end
 
-  def threelines(words)
-    line_1 = chars_to_braille_array(words).map do |letter|
+  def to_braille_string(characters)
+    line_1 = characters.map do |letter|
       letter[0..1]
     end
-    line_2 = chars_to_braille_array(words).map do |letter|
+    line_2 = characters.map do |letter|
       letter[2..3]
     end
-    line_3 = chars_to_braille_array(words).map do |letter|
+    line_3 = characters.map do |letter|
       letter[4..5]
     end
     "#{line_1.join('')}\n#{line_2.join('')}\n#{line_3.join('')}"
   end
 
-  def line_length(words)
-    (threelines(words).length - 2) / 3
-  end
-
-  def braille_return(words)
-    #[threelines, threelines, threelines].join(\n\n)
+  def line_divide(characters, max = LINE_MAX)
+    characters.each_slice(max).to_a
   end
 
 end
