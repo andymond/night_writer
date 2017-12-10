@@ -48,7 +48,7 @@ class TranslatorTest < MiniTest::Test
     assert_equal ["A", ".", "!", " ", " "], translator.character_verification("A.!  ")
   end
 
-  def test_line_length
+  def test_braille_line_length
     translator = Translator.new
 
     assert_equal 10, translator.line_length("hello")
@@ -56,26 +56,22 @@ class TranslatorTest < MiniTest::Test
     assert_equal 92, translator.line_length("WOAHHHHHHH   THAT! IS, GR3@t!")
   end
 
-  def test_line_length_limit
-    skip
+  def test_slice_caps_array_into_nested_arrays_of_80
     translator = Translator.new
 
-    assert_equal 160, translator.line_limiter("askdjfhasdlkfahsdfakjsdfhalsdkfjahdsflakjsdfhalskjdfhasldkfjahsdflaksjdfhasdlfkjah      dsaflkjsdh asd")
+    assert_equal [["t", "r", "i", "f", "o", "r", "c", "e"]], translator.line_divide("triforce")
   end
 
-  def test_line_divide
-    skip
+  def test_translate_array_character_arrays_to_array_of_braille_arrays
     translator = Translator.new
 
-    assert_equal "hey" "hey", translator.line_divide("hey hey")
+    assert_equal [["0.00..", "0..0..", "0.0.0.", "0.0.0.", "0..00."]], translator.nested_chars_to_nested_braille("hello")
   end
 
-  def test_line_return
-    skip
+  def test_braille_return
     translator = Translator.new
 
-    assert_equal "hey" "hey", translator.line_divide("hey hey")
-    assert_equal "hey\nhey", translator.line_return("hey hey")
+    assert_equal "0.0.0.0.0.\n00.00.0..0\n....0.0.0.\n\n", translator.braille_threelines("hello")
   end
 
 end

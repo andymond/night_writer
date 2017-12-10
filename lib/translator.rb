@@ -81,12 +81,22 @@ class Translator
     shifted_letters.flatten
   end
 
-  def chars_to_braille_array(words)
+  def line_divide(words)
+    @nested_char_array = capital_letters(words).each_slice(80).to_a
+  end
+
+  def chars_to_braille_array(words) #this will need to iterate on two levels for line length
     chars = capital_letters(words)
     braille = chars.map do |character|
       DICTIONARY[character.downcase]
     end
     braille
+  end
+
+  def nested_chars_to_nested_braille
+    @nested_char_array.map do |element|
+      element.chars_to_braille_array
+    end
   end
 
   def threelines(words)
@@ -106,17 +116,8 @@ class Translator
     (threelines(words).length - 2) / 3
   end
 
-  def line_limiter(words)
-    #sets line_length cap to 160, calls line divide?
-
-  end
-
-  def line_divide(words)
-    # divides line
-  end
-
-  def line_return(words)
-    #takes divided lines and adds \n for return after line3 of braille string
+  def braille_return(words)
+    #[threelines, threelines, threelines].join(\n\n)
   end
 
 end
