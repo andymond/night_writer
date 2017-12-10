@@ -38,22 +38,44 @@ class TranslatorTest < MiniTest::Test
     assert_equal ["a", "n", "d", "y"], translator.capital_letters("andy")
     assert_equal translator.split_words("lowcase"), translator.capital_letters("lowcase")
     assert_equal [" "], translator.capital_letters(" ")
+    #assert_equal ["$"], translator.capital_letters("$")
   end
 
   def test_character_verification_works
-    skip
     translator = Translator.new
 
-    assert_equal ["a", "b", "4"], translator.character_verification(["a", "b", "4", "$", "%"])
+    assert_equal ["a", "b", "4"], translator.character_verification("ab4$%^&*")
+    assert_equal ["A", ".", "!", " ", " "], translator.character_verification("A.!  ")
   end
 
-  def test_unexpected_input
+  def test_line_length
+    translator = Translator.new
+
+    assert_equal 10, translator.line_length("hello")
+    assert_equal 28, translator.line_length("oh! Hey ther3")
+    assert_equal 92, translator.line_length("WOAHHHHHHH   THAT! IS, GR3@t!")
+  end
+
+  def test_line_length_limit
     skip
     translator = Translator.new
 
-    assert_equal ["??????"], translator.chars_to_braille_array("@")
-    assert_equal ["??????", "??????", "??????", "0....."], translator.chars_to_braille_array("*&^1")
+    assert_equal 160, translator.line_limiter("askdjfhasdlkfahsdfakjsdfhalsdkfjahdsflakjsdfhalskjdfhasldkfjahsdflaksjdfhasdlfkjah      dsaflkjsdh asd")
+  end
 
+  def test_line_divide
+    skip
+    translator = Translator.new
+
+    assert_equal "hey" "hey", translator.line_divide("hey hey")
+  end
+
+  def test_line_return
+    skip
+    translator = Translator.new
+
+    assert_equal "hey" "hey", translator.line_divide("hey hey")
+    assert_equal "hey\nhey", translator.line_return("hey hey")
   end
 
 end

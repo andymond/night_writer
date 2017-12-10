@@ -60,12 +60,17 @@ class Translator
   end
 
   def character_verification(words)
-
+    verified = split_words(words).map do |char|
+      if char =~ /[\w |!|'|,|-|#|\.|\?]/
+        char
+      end
+    end
+    verified.compact
   end
 
   def capital_letters(words)
-    shifted_letters = split_words(words).map do |char|
-      if char =~ /(?: |1|2|3|4|5|6|7|8|9|!|'|,|-|#|\.|\?)/ # "." and "?" break it
+    shifted_letters = character_verification(words).map do |char|
+      if char =~ /(?: |1|2|3|4|5|6|7|8|9|!|'|,|-|#|\.|\?)/
         char
       elsif char == char.upcase
        ["shift", char.downcase]
@@ -77,7 +82,7 @@ class Translator
   end
 
   def chars_to_braille_array(words)
-    chars = split_words(words)
+    chars = capital_letters(words)
     braille = chars.map do |character|
       DICTIONARY[character.downcase]
     end
@@ -95,6 +100,23 @@ class Translator
       letter[4..5]
     end
     "#{line_1.join('')}\n#{line_2.join('')}\n#{line_3.join('')}"
+  end
+
+  def line_length(words)
+    (threelines(words).length - 2) / 3
+  end
+
+  def line_limiter(words)
+    #sets line_length cap to 160, calls line divide?
+
+  end
+
+  def line_divide(words)
+    # divides line
+  end
+
+  def line_return(words)
+    #takes divided lines and adds \n for return after line3 of braille string
   end
 
 end
