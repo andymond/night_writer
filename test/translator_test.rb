@@ -74,8 +74,13 @@ class TranslatorTest < MiniTest::Test
     translator = Translator.new
 
     assert_equal "0.\n..\n..", translator.to_braille("a")
-    assert_equal "0.0.\n....\n....", translator.to_braille("a@a")
+    assert_equal "character", translator.to_braille("a@a")
     assert_equal "\n\n", translator.to_braille("@@@@@@@@@@")
   end
 
+  def test_3_to_1_line_converts_line_broken_to_no_break_strings
+    translator = Translator.new
+
+    assert_equal ["0.....", "0....."], translator.three_to_one_line("0.0.\n....\n....")
+  end
 end

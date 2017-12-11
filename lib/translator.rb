@@ -16,6 +16,19 @@ class Translator
     translate(caps_verified)
   end
 
+  def to_words(lines)
+    divided_lines = process_line_breaks(lines)
+    braille = three_to_one_line(divided_lines)
+    verified = verify(braille)
+    characters = to_characters(verified)
+    caps_converted = has_shifts?(characters) ? capitalize(characters) : characters
+    decode(caps_converted)
+  end
+
+  def three_to_one_line(braille)
+
+  end
+
   def translate(characters, max = LINE_MAX)
     if characters.length < max
       encode(characters)
@@ -37,9 +50,9 @@ class Translator
   end
 
   def verify(characters)
-    verified = characters.map do |char|
-      if char =~ /[\w |!|'|,|-|#|\.|\?]/
-        char
+    verified = characters.map do |character|
+      if character =~ /[\w |!|'|,|-|#|\.|\?]/
+        character
       end
     end
     verified.compact
@@ -52,13 +65,13 @@ class Translator
   end
 
   def shift(letters)
-    shifted_letters = letters.map do |char|
-      if char =~ /(?: |1|2|3|4|5|6|7|8|9|!|'|,|-|#|\.|\?)/
-        char
-      elsif char == char.upcase
-       ["shift", char.downcase]
+    shifted_letters = letters.map do |character|
+      if character =~ /(?: |1|2|3|4|5|6|7|8|9|!|'|,|-|#|\.|\?)/
+        character
+      elsif character == character.upcase
+       ["shift", character.downcase]
       else
-       char
+       character
       end
     end
     shifted_letters.flatten
@@ -71,14 +84,14 @@ class Translator
   end
 
   def to_braille_string(characters)
-    line_1 = characters.map do |letter|
-      letter[0..1]
+    line_1 = characters.map do |character|
+      character[0..1]
     end
-    line_2 = characters.map do |letter|
-      letter[2..3]
+    line_2 = characters.map do |character|
+      character[2..3]
     end
-    line_3 = characters.map do |letter|
-      letter[4..5]
+    line_3 = characters.map do |character|
+      character[4..5]
     end
     "#{line_1.join('')}\n#{line_2.join('')}\n#{line_3.join('')}"
   end
