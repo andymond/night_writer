@@ -5,7 +5,7 @@ class Translator
 
   attr_accessor :words
 
-  def initialize(words = "hey")
+  def initialize
     @words = words
   end
 
@@ -14,19 +14,6 @@ class Translator
     verified = verify(characters)
     caps_verified = has_caps?(verified) ? shift(verified) : verified
     translate(caps_verified)
-  end
-
-  def to_words(lines)
-    divided_lines = process_line_breaks(lines)
-    braille = three_to_one_line(divided_lines)
-    verified = verify(braille)
-    characters = to_characters(verified)
-    caps_converted = has_shifts?(characters) ? capitalize(characters) : characters
-    decode(caps_converted)
-  end
-
-  def three_to_one_line(braille)
-
   end
 
   def translate(characters, max = LINE_MAX)
