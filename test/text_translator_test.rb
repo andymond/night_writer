@@ -1,4 +1,4 @@
-require './lib/translator'
+require './lib/text_translator'
 require 'minitest/autorun'
 require 'minitest/pride'
 

@@ -1,34 +1,30 @@
 require_relative 'dictionary'
 
 class BrailleDecoder
-
-
     LINE_MAX = 80
 
     attr_accessor :braille
 
   def initialize
     @braille = braille
-    @dictionary = Dictionary::CHARACTERS
   end
 
-  # def to_words(lines)
-  #   single_lines = process_line_breaks(lines)
-  #   divided_lines = split_line(single_lines)
-  #   one_line_braille = three_to_one_line(divided_lines)
-  #   characters = to_characters(one_line_braille)
-  #   caps_converted = has_shifts?(characters) ? capitalize(characters) : characters
-  #   translate(caps_converted)
-  # end
+  def to_words(lines)
+    single_lines = process_line_breaks(lines)
+    divided_lines = split_multi_lines(single_lines)
+    one_line_braille = multi_line_converter(divided_lines)
+    characters = to_characters_multi_line(one_line_braille)
+    caps_converted = have_shifts?(characters) ? capitalize_multi(characters) : characters
+    translate_multi(caps_converted)
+  end
 
-  def one_braille_line_to_words(braille_3_line_line)
-    separated_lines = split_line(braille_3_line_line)
+  def to_words_one_line(braille)
+    separated_lines = split_line(braille)
     one_line_braille = three_to_one_line(separated_lines)
     characters = to_characters(one_line_braille)
     caps_converted = has_shifts?(characters) ? capitalize(characters) : characters
     translate(caps_converted)
   end
-
 
   def process_line_breaks(lines)
     lines.split("\n\n")
@@ -60,8 +56,7 @@ class BrailleDecoder
 
   def to_characters(braille_array)
     braille_array.map do |braille|
-      @dictionary.key(braille)
-      # Dictionary::CHARACTERS.key(braille)
+      Dictionary::CHARACTERS.key(braille)
     end
   end
 
@@ -125,6 +120,12 @@ class BrailleDecoder
   def translate(character_array, max = LINE_MAX)
     line = character_string(character_array)
     inject_line_breaks(line, max)
+  end
+
+  def translate_multi(nested_character_array)
+    nested_character_array.map do |character_array|
+      translate(character_array)
+    end.join
   end
 
 end

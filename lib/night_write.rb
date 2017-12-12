@@ -1,4 +1,5 @@
-require 'pry'
+# require_relative "text_translator"
+# require_relative "braille_translator"
 
 class Runner
   attr_reader :read_file, :write_file
@@ -33,3 +34,6 @@ class Runner
   end
 
 end
+
+night_writer = Runner.new
+night_writer.message

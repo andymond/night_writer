@@ -49,7 +49,7 @@ class TranslatorTest < MiniTest::Test
     assert_equal ["0.....", "0....."], translator.verify_braille(["0.....", "0.....", "o..o.."])
   end
 
-  def test_braille_to_character_converter_works
+  def test_braille_to_characters_takes_one_line_braille_and_returns_text_array
     translator = BrailleDecoder.new
 
     assert_equal ["a", "a"], translator.to_characters(["0.....", "0....."])
@@ -119,15 +119,33 @@ class TranslatorTest < MiniTest::Test
     translator = BrailleDecoder.new
 
     assert_equal "Hi \nmy \nnam\ne i\ns", translator.translate(["H", "i", " ", "m", "y", " ", "n", "a", "m", "e", " ", "i", "s"], 3)
+    assert_equal "Hi my name is", translator.translate(["H", "i", " ", "m", "y", " ", "n", "a", "m", "e", " ", "i", "s"])
   end
 
-  def test_to_words_takes_one_line_of_braille_and_returns_line_of_alpha
+  def test_translate_multi_takes_nested_character_array_and_returns_lines_with_breaks
     translator = BrailleDecoder.new
 
-    assert_equal "a", translator.one_braille_line_to_words("0.\n..\n..")
-    assert_equal "aa", translator.one_braille_line_to_words("0.0.\n....\n....")
-    assert_equal "ey!", translator.one_braille_line_to_words("0.00..\n.0.000\n..000.")
-    assert_equal "H", translator.one_braille_line_to_words("..0.\n..00\n.0..")
+    assert_equal "Hi \nmy \nnam\ne i\ns", translator.translate([["H", "i", " ", "m", "y", " ", "n", "a", "m", "e", " ", "i", "s"]], 3)
+    assert_equal "Hi my name is", translator.translate([["H", "i", " ", "m", "y", " ", "n", "a", "m", "e", " ", "i", "s"]])
+  end
+
+  def test_to_words_one_line_takes_one_line_of_braille_and_returns_line_of_alpha
+    translator = BrailleDecoder.new
+
+    assert_equal "a", translator.to_words_one_line("0.\n..\n..")
+    assert_equal "aa", translator.to_words_one_line("0.0.\n....\n....")
+    assert_equal "ey!", translator.to_words_one_line("0.00..\n.0.000\n..000.")
+    assert_equal "H", translator.to_words_one_line("..0.\n..00\n.0..")
+  end
+
+  def test_to_words_takes_multiple_lines_of_braille_and_returns_line_of_alpha
+    translator = BrailleDecoder.new
+
+    assert_equal "a", translator.to_words("0.\n..\n..")
+    assert_equal "aa", translator.to_words("0.0.\n....\n....")
+    assert_equal "ey!", translator.to_words("0.00..\n.0.000\n..000.")
+    assert_equal "H", translator.to_words("..0.\n..00\n.0..")
+    assert_equal "HeyHey", translator.to_words("..0.0.00\n..00.0.0\n.0....00\n\n..0.0.00\n..00.0.0\n.0....00")
   end
 
 end

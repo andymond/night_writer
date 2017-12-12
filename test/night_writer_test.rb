@@ -1,4 +1,4 @@
-require './lib/runner'
+require './lib/night_write'
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'pry'
