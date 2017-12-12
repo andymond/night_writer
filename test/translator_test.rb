@@ -76,6 +76,7 @@ class TranslatorTest < MiniTest::Test
     assert_equal "0.\n..\n..", translator.to_braille("a")
     assert_equal "0.0.\n....\n....", translator.to_braille("a@a")
     assert_equal "\n\n", translator.to_braille("@@@@@@@@@@")
+    assert_equal "..0.\n..00\n.0..", translator.to_braille("H")
   end
 
 end
