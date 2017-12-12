@@ -1,6 +1,6 @@
-require_relative "text_translator"
+require_relative "braille_translator"
 
-class NightWrite
+class NightRead
   attr_reader :read_file, :write_file
 
   def initialize(input_array = ARGV)
@@ -16,8 +16,8 @@ class NightWrite
   end
 
   def process_content
-    text_translator = Translator.new
-    text_translator.to_braille(read_file_content)
+    braille_translator = BrailleDecoder.new
+    braille_translator.to_words(read_file_content)
   end
 
   def write_new_file
@@ -35,5 +35,5 @@ class NightWrite
 
 end
 
-night_writer = NightWrite.new
-night_writer.message
+night_reader = NightRead.new
+night_reader.message
