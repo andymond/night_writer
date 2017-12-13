@@ -1,3 +1,5 @@
+require 'simplecov'
+SimpleCov.start
 require './lib/text_translator'
 require 'minitest/autorun'
 require 'minitest/pride'

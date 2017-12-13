@@ -16,13 +16,15 @@ class NightRead
   end
 
   def process_content
+    content = read_file_content
     braille_translator = BrailleDecoder.new
-    braille_translator.to_words(read_file_content)
+    braille_translator.to_words(content)
   end
 
   def write_new_file
     writer = File.open(@write_file, 'w')
-    char_count = writer.write(process_content)
+    content = process_content
+    char_count = writer.write(content)
     writer.rewind
     writer.close
     char_count
