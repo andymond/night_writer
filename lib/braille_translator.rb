@@ -81,9 +81,9 @@ class BrailleDecoder
   def capitalize(character_array)
     character_array.map.with_index do |character, i|
       if character == "shift"
-        a = character_array[i + 1].upcase
+        cap = character_array[i + 1].upcase
         character_array.delete_at(i)
-        a
+        cap
       else
         character
       end

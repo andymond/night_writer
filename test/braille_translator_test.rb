@@ -1,5 +1,3 @@
-require 'simplecov'
-SimpleCov.start
 require './lib/braille_translator'
 require 'minitest/autorun'
 require 'minitest/pride'
@@ -57,7 +55,6 @@ class TranslatorTest < MiniTest::Test
     assert_equal ["a", "a"], translator.to_characters(["0.....", "0....."])
     assert_equal ["shift", "b"], translator.to_characters([".....0", "0.0..."])
     assert_equal [" "], translator.to_characters(["......"])
-    #assert_equal ["1", "1"], translator.to_characters(["0.....", "0....."])
   end
 
   def test_braile_to_char_works_for_multiple_lines
