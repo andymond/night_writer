@@ -40,6 +40,14 @@ class TranslatorTest < MiniTest::Test
     assert_equal ["h", "i", "!", "shift", "@", "shift", "b"], translator.shift(["h","i", "!", "@", "B"])
   end
 
+  def test_number_works
+    translator = Translator.new
+
+    assert_equal ["#", "1", " "], translator.number(["1"])
+    assert_equal ["#", "1", "1", " "], translator.number(["1", "1"])
+    assert_equal ["a"], translator.number(["a"])
+  end
+
   def test_to_braille_array_works
     translator = Translator.new
 
