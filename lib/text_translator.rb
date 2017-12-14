@@ -64,31 +64,6 @@ class Translator
     shifted_letters.flatten
   end
 
-  def has_nums?(characters)
-    characters.any? do |character|
-      character == "#"
-    end
-  end
-
-  def number?(character)
-    character =~ /[0-9]/ ? true : false
-  end
-
-  def number(characters)
-     characters.map.with_index do |character, i|
-       require 'pry'; binding.pry
-      if i == 0 && number?(character)
-        characters.insert(i, "#")
-      elsif number?(character) && number?(characters[i - 1]) == false
-        characters.insert(i, "#")
-      elsif number?(character) && number?(characters[i + 1]) == false
-        characters.insert(i + 1, " ")
-      else
-        character
-      end
-    end
-  end
-
   def to_braille_array(characters)
     characters.map do |character|
       Dictionary::CHARACTERS[character.downcase]
