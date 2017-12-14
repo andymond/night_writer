@@ -44,20 +44,12 @@ class TranslatorTest < MiniTest::Test
     assert_equal [["0.....", "0....."], ["0.....", "0....."]], translator.multi_line_converter([["0.0.", "....", "...."], ["0.0.", "....", "...."]])
   end
 
-  def test_verification_process_works
-    skip
-    translator = BrailleDecoder.new
-
-    assert_equal ["0.....", "0....."], translator.verify_braille(["0.....", "0.....", "o..o.."])
-  end
-
   def test_braille_to_characters_takes_one_line_braille_and_returns_text_array
     translator = BrailleDecoder.new
 
     assert_equal ["a", "a"], translator.to_characters(["0.....", "0....."])
     assert_equal ["shift", "b"], translator.to_characters([".....0", "0.0..."])
     assert_equal [" "], translator.to_characters(["......"])
-    #assert_equal ["1", "1"], translator.to_characters(["0.....", "0....."])
   end
 
   def test_braile_to_char_works_for_multiple_lines
