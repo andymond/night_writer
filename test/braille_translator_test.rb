@@ -1,5 +1,3 @@
-require 'simplecov'
-SimpleCov.start
 require './lib/braille_translator'
 require 'minitest/autorun'
 require 'minitest/pride'
